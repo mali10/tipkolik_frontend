@@ -8,12 +8,12 @@ const StatusBarHeight = Constants.statusBarHeight;
 
 // colors
 export const Colors = {
-  primary: '#ffffff',
-  secondary: '#E5E7EB',
+  primary: '#ffffff', //StyledContainers backgroundcolor
+  secondary: '#E5E7EB', //inputfields backgroundcolor
   tertiary: '#1F2937',
   darkLight: '#9CA3AF',
-  brand: '#6D28D9',
-  green: '#10B981',
+  brand: 'black', //buttons and important texts
+  green: 'darkgreen',
   red: '#EF4444',
 };
 const { primary, secondary, tertiary, darkLight, brand, green, red } = Colors;
@@ -38,17 +38,11 @@ export const WelcomeContainer = styled(InnerContainer)`
 `;
 
 export const LoginPageLogo = styled.Image`
-  width: 200px;
-  height: 200px;
+  
 `;
 
 export const Avatar = styled.Image`
-  width: 100px;
-  height: 100px;
   margin: auto;
-  border-radius: 50px;
-  border-width: 2px;
-  border-color: ${secondary};
   margin-bottom: 10px;
   margin-top: 10px;
 `;

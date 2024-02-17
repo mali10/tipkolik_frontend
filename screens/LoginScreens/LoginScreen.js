@@ -106,6 +106,10 @@ const LoginScreen = ({ navigation }) => {
       navigation.navigate('Signup');
     };
 
+  const forFrontendDev = () => {
+    navigation.navigate('Welcome');
+  }
+
     
   // values in onSubmit: Inputs for Email and Password
   return (
@@ -115,7 +119,7 @@ const LoginScreen = ({ navigation }) => {
         <StatusBar style="dark" />
         <InnerContainer>
           <LoginPageLogo resizeMode="cover" source={require('../../assets/img/Login_t.png')} />
-          <PageTitle> Tipkolik </PageTitle>
+          
           <SubTitle> Hesap Girişi </SubTitle>
 
           <Formik
@@ -176,6 +180,10 @@ const LoginScreen = ({ navigation }) => {
                     <ButtonText google={true}> Google ile giriş yap </ButtonText>
                   </View>
                 </StyledButton>
+
+                <StyledButton onPress={forFrontendDev} >
+                  <ButtonText> ilerle </ButtonText>
+                </StyledButton>
               
                 <ExtraView>
                   <ExtraText> Henüz hesabın yok mu ? </ExtraText>
@@ -188,7 +196,7 @@ const LoginScreen = ({ navigation }) => {
             )}
           </Formik>
         </InnerContainer>
-
+        <Line></Line>
       </StyledContainer>
     </KeyboardAvoidingWrapper>
   );

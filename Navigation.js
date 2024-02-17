@@ -33,24 +33,27 @@ function TabGroup() {
             //headerShown: false, inside the options
             screenOptions={ ({route , navigation}) => 
                 ({
-                    tabBarIcon: ({color , focused ,size}) => {
+                    tabBarIcon: ({color , focused , size}) => {
                         let iconName;
                         if (route.name === "Tahminler") {
-                            iconName = "home-outline";
+                            iconName = focused ? "home" : "home-outline";
                         }
                         else if (route.name === "Puan Durumu") {
-                            iconName = "football-outline";
+                            iconName = focused ? "football" : "football-outline";
                         }
                         else if (route.name === "Chat") {
-                            iconName = "chatbox-ellipses-outline";
+                            iconName = focused ? "chatbox-ellipses" : "chatbox-ellipses-outline";
                         }
                         else if (route.name === "Ayarlar") {
-                            iconName = "settings-outline";
+                            iconName = focused ? "settings" : "settings-outline";
                         }
                         return <Ionicons name={iconName} size={size} color={color} />
                     },
-                    tabBarActiveTintColor: "green",
-                    tabBarInactiveTintColor: "black"
+                    tabBarStyle: {
+                        backgroundColor: "white"
+                    } ,
+                    tabBarActiveTintColor: "black",
+                    tabBarInactiveTintColor: "black" , 
                 })
             }>
                 <Tab.Screen name="Tahminler" component={PredScreen}/>
@@ -73,11 +76,19 @@ export default function Navigation() {
                     <bigStack.Navigator /* initialRouteName="Login" headerMode="none" */
                         screenOptions={{
                             headerStyle:{
-                                backgroundColor: 'transparent'
+                                backgroundColor: 'darkgreen' , 
+                            
                             },
-                            headerTintColor: tertiary,
-                            headerTransparent: true,
-                            headerTitle: '' , 
+                            headerTintColor: 'white', 
+                            headerBackTitleVisible: false ,
+                            headerTransparent: false, // Header above everything
+                            headerTitle: 'tipkolik' , 
+                            headerTitleStyle: {
+                                fontWeight: 'bold', 
+                                fontSize: 28, 
+                                color: 'white',
+                            },
+                            
                         }}
                         initialRouteName="Login"
                     >
@@ -85,9 +96,9 @@ export default function Navigation() {
                         <bigStack.Screen name='Signup' component={SignupScreen} />
                         <bigStack.Screen name='Welcome' component={WelcomeScreen} />
                         <bigStack.Screen name='Turnuvalar' component={TournamentsScreen} />
-                        <bigStack.Screen name='TurnuvaTabGroup' component={TabGroup} />
+                        <bigStack.Screen name='TurnuvaTabGroup' component={TabGroup}  />
+                        
                     </bigStack.Navigator>
             </NavigationContainer>
-     
     );
 }
