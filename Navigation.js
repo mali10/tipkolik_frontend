@@ -13,6 +13,7 @@ import WelcomeScreen from './screens/LoginScreens/WelcomeScreen';
 
 import TournamentsScreen from './screens/MainScreens/TournamentsScreen ';
 
+
 import PredScreen from './screens/TabGroupScreens/PredScreen';
 import ChatScreen from './screens/TabGroupScreens/ChatScreen';
 import TabelaScreen from './screens/TabGroupScreens/TabelaScreen';
@@ -23,6 +24,7 @@ import { CredentialsContext } from './components/LoginComponents/CredentialsCont
 
 //colors
 import {Colors} from './components/LoginComponents/styles';
+import CreateTournamentScreen from './screens/MainScreens/CreateTournamentScreen';
 const { primary , tertiary} = Colors;
 
 //Tab bottom
@@ -96,6 +98,7 @@ export default function Navigation() {
                         <bigStack.Screen name='Signup' component={SignupScreen} />
                         <bigStack.Screen name='Welcome' component={WelcomeScreen} />
                         <bigStack.Screen name='Turnuvalar' component={TournamentsScreen} />
+                        <bigStack.Screen name='TurnuvaCreating' component={CreateTournamentScreen} />
                         <bigStack.Screen name='TurnuvaTabGroup' component={TabGroup}  />
                         
                     </bigStack.Navigator>

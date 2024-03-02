@@ -17,7 +17,8 @@ const TournamentsScreen = ({navigation}) => {
 
   const handleCreateTurnuva = () => {
     // Navigate to the screen for creating a new turnuva
-    //navigation.navigate('CreateTurnuva');
+    navigation.navigate('TurnuvaCreating');
+
   };
 
   const handleGeneralTurnuva = () => {
