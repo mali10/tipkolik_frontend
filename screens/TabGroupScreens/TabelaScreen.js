@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
-import { teamsData, gamesData } from '../../components/DataComponents/TeamsData';
+import { teamsData, gamesData } from '../../components/DataComponents/TurkishLeague';
 
 
 const TabelaScreen = () => {

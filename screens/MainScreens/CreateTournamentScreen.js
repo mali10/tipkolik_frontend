@@ -6,58 +6,39 @@ import {
   TextInput,
   View,
   StyleSheet,
-  Switch,
   ScrollView,
-  Modal,
-  Button,
-  FlatList,
+  Switch,
 } from 'react-native';
 
-const CreateTournamentScreen = ({ navigation }) => {
+
+import { leagueName as TurkishLeagueName, teamsData as TurkishTeamsData } from '../../components/DataComponents/TurkishLeague';
+import { leagueName as EnglishLeagueName, teamsData as EnglishTeamsData } from '../../components/DataComponents/EnglishLeague';
+
+const CreateTournamentScreen = () => {
   const [playerName, setPlayerName] = useState('');
   const [players, setPlayers] = useState([]);
-  const [selectedCountry, setSelectedCountry] = useState('');
-  const [selectedTeams, setSelectedTeams] = useState([]);
   const [isSurpriseMatchActive, setIsSurpriseMatchActive] = useState(false);
-  const [isCountryModalVisible, setIsCountryModalVisible] = useState(false);
-  const [isTeamModalVisible, setIsTeamModalVisible] = useState(false);
 
-  // Dummy data for countries and teams
-  const countries = ['Spain', 'England', 'Italy'];
-  const teamsByCountry = {
-    Spain: ['Real Madrid', 'Barcelona'],
-    England: ['Liverpool', 'Manchester United'],
-    Italy: ['Juventus', 'AC Milan'],
+  const [teamsData, setTeamsData] = useState([]);
+  
+  const leagues = [
+    { name: TurkishLeagueName, teams: TurkishTeamsData },
+    { name: EnglishLeagueName, teams: EnglishTeamsData },
+  ];
+
+  const selectLeague = (leagueTeams) => {
+    setTeamsData(leagueTeams);
   };
 
   const addPlayer = () => {
-    if (playerName && !players.includes(playerName)) {
-      setPlayers(currentPlayers => [...currentPlayers, playerName]);
+    if (playerName.trim() && !players.includes(playerName)) {
+      setPlayers(currentPlayers => [...currentPlayers, playerName.trim()]);
       setPlayerName('');
     }
   };
 
-  const handleCountrySelect = (country) => {
-    setSelectedCountry(country);
-    setIsCountryModalVisible(false);
-    setSelectedTeams([]); // Clear teams when country changes
-  };
-
-  const handleTeamSelect = (team) => {
-    setSelectedTeams(currentTeams => {
-      if (!currentTeams.includes(team)) {
-        return [...currentTeams, team];
-      } else {
-        return currentTeams;
-      }
-    });
-    setIsTeamModalVisible(false);
-  };
-
-  const createTournament = () => {
-    // Placeholder for creating tournament logic
-    console.log('Creating tournament...');
-    // Here you would send the tournament data to your backend API
+  const removePlayer = (indexToRemove) => {
+    setPlayers(currentPlayers => currentPlayers.filter((_, index) => index !== indexToRemove));
   };
 
   return (
@@ -74,105 +55,70 @@ const CreateTournamentScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.playersList}>
-        {players.map((player, index) => (
-          <View key={index} style={styles.playerItem}>
-            <Text>{player}</Text>
-          </View>
+      <View style={styles.listContainer}>
+        <ScrollView style={styles.playersList}>
+          {players.map((player, index) => (
+            <View key={index.toString()} style={styles.playerItem}>
+              <Text>{player}</Text>
+              <TouchableOpacity onPress={() => removePlayer(index)} style={styles.deleteButton}>
+                <Text style={styles.deleteButtonText}>X</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </ScrollView>
+      </View>
+
+      {/* League selection buttons */}
+      <ScrollView style={styles.leagueButtonsContainer} horizontal showsHorizontalScrollIndicator={false}>
+        {leagues.map((league, index) => (
+          <TouchableOpacity
+            key={index}
+            onPress={() => selectLeague(league.teams)}
+            style={styles.leagueButton}
+          >
+            <Text style={styles.leagueButtonText}>{league.name}</Text>
+          </TouchableOpacity>
         ))}
       </ScrollView>
 
-      <TouchableOpacity
-        onPress={() => setIsCountryModalVisible(true)}
-        style={styles.button}
-      >
-        <Text>Select Country</Text>
-      </TouchableOpacity>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isCountryModalVisible}
-        onRequestClose={() => setIsCountryModalVisible(false)}
-      >
-        <View style={styles.modalView}>
-          <FlatList
-            data={countries}
-            keyExtractor={(item) => item}
-            renderItem={({ item }) => (
-              <Button title={item} onPress={() => handleCountrySelect(item)} />
-            )}
-          />
-        </View>
-      </Modal>
-
-      <TouchableOpacity
-        onPress={() => setIsTeamModalVisible(true)}
-        style={styles.button}
-        disabled={!selectedCountry}
-      >
-        <Text>Select Team</Text>
-      </TouchableOpacity>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isTeamModalVisible}
-        onRequestClose={() => setIsTeamModalVisible(false)}
-      >
-        <View style={styles.modalView}>
-          {selectedCountry && (
-            <FlatList
-              data={teamsByCountry[selectedCountry]}
-              keyExtractor={(item) => item}
-              renderItem={({ item }) => (
-                <Button title={item} onPress={() => handleTeamSelect(item)} />
-              )}
-            />
-          )}
-        </View>
-      </Modal>
-
-      <ScrollView style={styles.selectedTeamsContainer}>
-        {selectedTeams.map((team, index) => (
-          <View key={index} style={styles.selectedTeamItem}>
-            <Text>{team}</Text>
+      {/* Teams listing based on selected league */}
+      <ScrollView style={styles.teamsContainer}>
+        {teamsData.map((team) => (
+          <View key={team.id} style={styles.teamItem}>
+            <Text>{team.name}</Text>
           </View>
         ))}
-      </ScrollView>
+      </ScrollView>      
+      
 
       <View style={styles.switchContainer}>
-        <Text>Surprise Match</Text>
+        <Text>Süpriz Maç</Text>
         <Switch
-          trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor={isSurpriseMatchActive ? "#f5dd4b" : "#f4f3f4"}
+          trackColor={{ false: "#767577", true: "purple" }}
+          thumbColor={isSurpriseMatchActive ? "white" : "#f4f3f4"}
+          ios_backgroundColor="#3e3e3e"
           onValueChange={setIsSurpriseMatchActive}
           value={isSurpriseMatchActive}
         />
       </View>
 
-      <TouchableOpacity onPress={createTournament} style={styles.createButton}>
-        <Text>Create Tournament</Text>
-      </TouchableOpacity>
     </SafeAreaView>
   );
 };
 
-
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    //flex: 1,
     padding: 20,
-    alignItems: 'center', // Center content horizontally
+    alignItems: 'center',
+    margin: 20,
   },
   inputContainer: {
     flexDirection: 'row',
-    width: '90%', // Use full width of the container
-    maxWidth: 400, // Set a max width for larger screens
+    width: '90%',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 20 ,
-    marginBottom: 10,
+    marginBottom: 20,
   },
   input: {
     borderWidth: 1,
@@ -183,92 +129,75 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   button: {
-    backgroundColor: 'green',
+    backgroundColor: 'purple',
     padding: 10,
     borderRadius: 5,
+    width: '30%',
+    alignItems: 'center',
+  },
+  listContainer: {
+    width: '90%',
   },
   playersList: {
-    width: '60%', // Use full width of the container
-    maxWidth: 400, // Set a max width for larger screens
     marginBottom: 20,
   },
   playerItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     backgroundColor: 'lightgray',
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 5,
+  },
+  deleteButton: {
+    alignItems: 'center' ,
+    width: '10%' ,
+    padding: 2,
+    borderRadius: 2,
+    backgroundColor: 'purple', 
+  },
+  deleteButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  switchContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '90%',
+    marginBottom: 20,
+    marginTop: 40 ,
+  },
+  leagueButtonsContainer: {
+    flexDirection: 'column',
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  leagueButton: {
+    backgroundColor: 'purple',
     padding: 10,
     borderRadius: 5,
     marginRight: 10,
-    marginBottom: 5 ,
+    width: '50%',
+    alignItems: 'center' ,
   },
-  countryContainer: {
-    flexDirection: 'row',
-    width: '100%', // Use full width of the container
-    maxWidth: 400, // Set a max width for larger screens
-    justifyContent: 'space-around',
-    marginBottom: 20,
+  leagueButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
-  countryButton: {
-    backgroundColor: 'lightgray',
-    padding: 10,
-    borderRadius: 5,
-    flex: 1, // Make each button take up equal space
-    marginHorizontal: 2, // Add space between buttons
-    
-  },
-  teamsList: {
-    width: '100%', // Use full width of the container
-    maxWidth: 400, // Set a max width for larger screens
-    marginBottom: 20,
+  teamsContainer: {
+    height: 250 ,
+    width: '90%',
+    padding: 1 , 
+    marginTop: 0 ,
   },
   teamItem: {
     backgroundColor: 'lightgray',
     padding: 10,
     borderRadius: 5,
-    marginRight: 10,
-  },
-  selectedTeamsContainer: {
-    width: '100%', // Use full width of the container
-    maxWidth: 400, // Set a max width for larger screens
-    marginBottom: 20,
-  },
-  selectedTeamItem: {
-    backgroundColor: 'lightblue',
-    padding: 10,
-    borderRadius: 5,
-    marginRight: 10,
-  },
-  switchContainer: {
-    flexDirection: 'row',
-    width: '100%', // Use full width of the container
-    maxWidth: 400, // Set a max width for larger screens
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 50,
-  },
-  createButton: {
-    backgroundColor: 'green',
-    padding: 20,
-    borderRadius: 5,
-    alignItems: 'center',
-    width: '100%', // Use full width of the container
-    maxWidth: 400, // Set a max width for larger screens
-  },
-  modalView: {
-    marginB: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-
+    marginBottom: 5,
   },
 });
 
 export default CreateTournamentScreen;
-

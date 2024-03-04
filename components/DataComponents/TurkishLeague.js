@@ -1,4 +1,4 @@
-// TeamsData.js
+export const leagueName = "Süper Lig" ;
 
 export const teamsData = [
   { 

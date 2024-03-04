@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, SafeAreaView, ScrollView, TextInput, Image, StyleSheet , TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { gamesData , teamsData } from '../../components/DataComponents/TeamsData';
+import { gamesData , teamsData } from '../../components/DataComponents/TurkishLeague';
 
 
  const generateGames = () => {
