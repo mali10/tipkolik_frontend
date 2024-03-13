@@ -56,8 +56,9 @@ const LoginScreen = ({ navigation }) => {
 
     // to clear previous messages
     handleMessage(null);
- 
-    const url = "http://10.0.2.2:3000/user/signin";
+    
+    //should be updated according to the device and IP
+    const url = "http://192.168.1.39:3000/user/signin"; 
 
     axios.post(url , credentials).
      then(( response ) => {
