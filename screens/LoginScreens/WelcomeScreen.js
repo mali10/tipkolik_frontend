@@ -40,8 +40,8 @@ const WelcomeScreen = ( {navigation} ) => {
 
             <PageTitle welcome={true}> Tipkolik'e Hoşgeldiniz </PageTitle>
       
-            <SubTitle welcome={true}>{ name }</SubTitle>
-            <SubTitle welcome={true}>{ email }</SubTitle>
+            <SubTitle welcome={true}> { name }</SubTitle>
+            <SubTitle welcome={true}> { email }</SubTitle>
 
             <StyledFormArea>
                 <Avatar resizeMode="cover" source={require('../../assets/img/Login_t.png')}/>

@@ -2,97 +2,97 @@ export const leagueName = "Süper Lig" ;
 
 export const teamsData = [
   { 
-    id: 1, 
+    t_id: 1, 
     name: 'Galatasaray', 
     logo: 'football-outline', 
     nick: 'GS' 
   },
   { 
-    id: 2, 
+    t_id: 2, 
     name: 'Fenerbahce', 
     logo: 'football-outline', 
     nick: 'FB' 
   },
   { 
-    id: 3,
+    t_id: 3,
     name: 'Besiktas', 
     logo: 'football-outline', 
     nick: 'BJK' 
   },
   { 
-    id: 4, 
+    t_id: 4, 
     name: 'Trabzonspor', 
     logo: 'football-outline',  
     nick: 'TS' 
   },
   { 
-    id: 5, 
+    t_id: 5, 
     name: 'Sivasspor', 
     logo: 'football-outline', 
     nick: 'SS' 
   },
   { 
-    id: 6, 
+    t_id: 6, 
     name: 'Alanyaspor', 
     logo: 'football-outline', 
     nick: 'AS' 
   },
   { 
-    id: 7, 
+    t_id: 7, 
     name: 'Konyaspor', 
     logo: 'football-outline', 
     nick: 'KS' 
   },
   { 
-    id: 8, 
+    t_id: 8, 
     name: 'Goztepe', 
     logo: 'football-outline',  
     nick: 'GZP' 
   },
   { 
-    id: 9, 
+    t_id: 9, 
     name: 'Antalyaspor', 
     logo: 'football-outline', 
     nick: 'ASPR' 
   },
   { 
-    id: 10, 
+    t_id: 10, 
     name: 'Kayserispor', 
     logo: 'football-outline',  
     nick: 'KYSP' 
   },
   { 
-    id: 11, 
+    t_id: 11, 
     name: 'Hatayspor', 
     logo: 'football-outline', 
     nick: 'HTY' 
   },
   { 
-    id: 12, 
+    t_id: 12, 
     name: 'Denizlispor', 
     logo: 'football-outline',  
     nick: 'DNZ' 
   },
   { 
-    id: 13, 
+    t_id: 13, 
     name: 'Rizespor', 
     logo: 'football-outline',  
     nick: 'RZ' 
   },
   { 
-    id: 14, 
+    t_id: 14, 
     name: 'Malatyaspor', 
     logo: 'football-outline', 
     nick: 'MLT' 
   },
   { 
-    id: 15, 
+    t_id: 15, 
     name: 'Erzurumspor', 
     logo: 'football-outline', 
     nick: 'EZS' 
   },
   { 
-    id: 16, 
+    t_id: 16, 
     name: 'Akhisar B.', 
     logo: 'football-outline',  
     nick: 'AB' 

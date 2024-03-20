@@ -109,7 +109,7 @@ const SignupScreen = ({ navigation }) => {
         // The request was made but no response was received
         errorMessage = "No response was received. Check your network and try again.";
       }
-
+      
       // Update the UI with the appropriate error message
       handleMessage(errorMessage, "ERROR");
       setSubmitting(false);

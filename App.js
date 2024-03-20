@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import 'react-native-gesture-handler';
-import Navigation from './Navigation'; // Adjust the import path based on your project structure
-import { CredentialsContext } from './components/LoginComponents/CredentialsContext'; // Adjust the import path based on your project structure
+import Navigation from './Navigation'; 
+import { CredentialsContext } from './components/LoginComponents/CredentialsContext'; 
 
 const App = () => {
   const [storedCredentials, setStoredCredentials] = useState(null);

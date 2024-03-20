@@ -1,22 +1,22 @@
 export const leagueName = "LaLiga"
 
 export const teamsData = [
-    { id: 1, name: 'Real Madrid', logo: 'football-outline', nick: 'RM' },
-    { id: 2, name: 'Barcelona', logo: 'football-outline', nick: 'BAR' },
-    { id: 3, name: 'Atletico Madrid', logo: 'football-outline', nick: 'ATM' },
-    { id: 4, name: 'Sevilla', logo: 'football-outline', nick: 'SEV' },
-    { id: 5, name: 'Valencia', logo: 'football-outline', nick: 'VAL' },
-    { id: 6, name: 'Real Sociedad', logo: 'football-outline', nick: 'RS' },
-    { id: 7, name: 'Villarreal', logo: 'football-outline', nick: 'VIL' },
-    { id: 8, name: 'Betis', logo: 'football-outline', nick: 'BET' },
-    { id: 9, name: 'Athletic Bilbao', logo: 'football-outline', nick: 'ATH' },
-    { id: 10, name: 'Getafe', logo: 'football-outline', nick: 'GET' },
-    { id: 11, name: 'Espanyol', logo: 'football-outline', nick: 'ESP' },
-    { id: 12, name: 'Celta Vigo', logo: 'football-outline', nick: 'CEL' },
-    { id: 13, name: 'Levante', logo: 'football-outline', nick: 'LEV' },
-    { id: 14, name: 'Mallorca', logo: 'football-outline', nick: 'MAL' },
-    { id: 15, name: 'Alaves', logo: 'football-outline', nick: 'ALA' },
-    { id: 16, name: 'Cadiz', logo: 'football-outline', nick: 'CAD' },
+    { t_id: 1, name: 'Real Madrid', logo: 'football-outline', nick: 'RM' },
+    { t_id: 2, name: 'Barcelona', logo: 'football-outline', nick: 'BAR' },
+    { t_id: 3, name: 'Atletico Madrid', logo: 'football-outline', nick: 'ATM' },
+    { t_id: 4, name: 'Sevilla', logo: 'football-outline', nick: 'SEV' },
+    { t_id: 5, name: 'Valencia', logo: 'football-outline', nick: 'VAL' },
+    { t_id: 6, name: 'Real Sociedad', logo: 'football-outline', nick: 'RS' },
+    { t_id: 7, name: 'Villarreal', logo: 'football-outline', nick: 'VIL' },
+    { t_id: 8, name: 'Betis', logo: 'football-outline', nick: 'BET' },
+    { t_id: 9, name: 'Athletic Bilbao', logo: 'football-outline', nick: 'ATH' },
+    { t_id: 10, name: 'Getafe', logo: 'football-outline', nick: 'GET' },
+    { t_id: 11, name: 'Espanyol', logo: 'football-outline', nick: 'ESP' },
+    { t_id: 12, name: 'Celta Vigo', logo: 'football-outline', nick: 'CEL' },
+    { t_id: 13, name: 'Levante', logo: 'football-outline', nick: 'LEV' },
+    { t_id: 14, name: 'Mallorca', logo: 'football-outline', nick: 'MAL' },
+    { t_id: 15, name: 'Alaves', logo: 'football-outline', nick: 'ALA' },
+    { t_id: 16, name: 'Cadiz', logo: 'football-outline', nick: 'CAD' },
     // Add more teams as needed
   ];
   
