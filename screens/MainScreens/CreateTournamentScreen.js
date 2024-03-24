@@ -9,6 +9,7 @@ import {
   StyleSheet,
   ScrollView,
   Switch,
+  Alert
 } from 'react-native';
 
 //API Client
@@ -24,22 +25,29 @@ import { leagueName as Euro2024Name , teamsData as Euro2024TeamsData } from '../
 
 const CreateTournamentScreen = () => {
 
+  // New state for managing the feedback message
+  const [feedback, setFeedback] = useState('');
+
   // credentials context
   const { storedCredentials } = useContext(CredentialsContext);
   // Fallback to default values if storedCredentials is null
   const defaultCredentials = { name: 'Creator', email: 'creator@example.com' };
   const { name: creatorName } = storedCredentials || defaultCredentials;
 
+  // For tournament name
+  const [tournamentName, setTournamentName] = useState('');
+
   // For players list
   const [playerName, setPlayerName] = useState('');
   const [players, setPlayers] = useState([]);
-
-  const [isSurpriseMatchActive, setIsSurpriseMatchActive] = useState(false);
 
   const [selectedTeams, setSelectedTeams] = useState([]);
   // state to hold the currently displayed league's teams
   const [currentLeagueTeams, setCurrentLeagueTeams] = useState(Euro2024TeamsData);
 
+  const [isSurpriseMatchActive, setIsSurpriseMatchActive] = useState(false);
+
+  
   const toggleTeamSelection = (team , leagueName) => {
     setSelectedTeams((prevSelectedTeams) => {
       const uniqueId = `${leagueName}-${team.t_id}`; // creating uniqueId from the TeamsData files
@@ -80,45 +88,43 @@ const CreateTournamentScreen = () => {
     }, {});
   };
   
-
-  /* 
-  // When adding players, should be checked if those users really exist in the backend, should send a request 
-  const checkPlayerExists = async (playerName) => {
+  // When adding players, check 
+  const handleCheckPlayerExists = async (playerName) => {
     try {
-      const response = await axios.post("http://<your-backend-url>/check-player", { playerName });
-      return response.data.exists; // Assuming the backend returns { exists: true/false }
+      const response = await axios.post("http://192.168.1.39:3000/user/check-player", { playerName });
+      return response.data.exists; // Returns true if the player exists, false otherwise
     } catch (error) {
       console.error("Error checking player existence:", error);
-      return false; // Assume player doesn't exist if there's an error
-    }
-  }; 
-  */
-
-  /*
-  const searchUserByName = async (userName) => {
-    try {
-      const response = await axios.get(`http://your-backend.com/user/search?name=${encodeURIComponent(userName)}`);
-      const users = response.data;
-
-      if (users.length > 0) {
-        // Assuming the search returns an array and you're taking the first result
-        return users[0];
-      } else {
-        console.log('No users found');
-        return null;
-      }
-    } catch (error) {
-      console.error('Error searching for user:', error);
-      return null;
+      throw error; // Rethrow the error to handle it in the calling function
     }
   };
-  */
-
+  
   // addPlayer function
-  const addPlayer = () => {
-    if (playerName.trim() && !players.includes(playerName)) {
-      setPlayers(currentPlayers => [...currentPlayers, playerName.trim()]);
-      setPlayerName('');
+  const addPlayer = async () => {
+
+    setFeedback(''); // Clear previous feedback
+    if (!playerName.trim()) {
+      // Provide feedback if the player name input field is empty
+      setFeedback(' Oyuncu ismi girin !');
+      return; // Exit the function early
+    }
+
+    try {
+      // or handle with Alert
+      const exists = await handleCheckPlayerExists(playerName.trim());
+      if (exists) {
+        if (!players.includes(playerName.trim())) {
+          setPlayers(currentPlayers => [...currentPlayers, playerName.trim()]);
+          setPlayerName(''); // Clear the input field after adding
+          setFeedback(''); // Clear feedback if successful
+        } else {
+          setFeedback("Player is already added.");
+        }
+      } else {
+        setFeedback("No such player exists.");
+      }
+    } catch (error) {
+      setFeedback("Failed to check if player exists. Please try again.");
     }
   };
   
@@ -126,23 +132,61 @@ const CreateTournamentScreen = () => {
     setPlayers(currentPlayers => currentPlayers.filter((_, index) => index !== indexToRemove));
   };
 
-  const createTournament = () => {
-    const playerIds = players.map(player => player.id);
-    const teams = selectedTeams; // Assuming these are the team IDs or names
-    const settings = { isSurpriseMatchActive };
+  const createTournament = async () => {
 
-    // Here you'd make a request to your backend with playerIds, teams, and settings
-    console.log('Creating tournament with:', { playerIds, teams, settings });
+    // Assuming `players` state holds player names, not IDs.
+    // Adjust URL to your backend endpoint.
+
+    const apiUrl = "http://192.168.1.39:3000/tournament/create";
+
+    const tournamentData = {
+        t_name: tournamentName,
+        playerNames: players, 
+        teams: selectedTeams.map(team => team.name), // Assuming each selected team has a 'name' field. Adjust as necessary.
+        settings: {
+            isSurpriseMatchActive: isSurpriseMatchActive,
+        },
+    };
+
+    try {
+      const response = await axios.post(apiUrl, tournamentData);
+      if (response.status === 201) {
+          Alert.alert("Success", "Tournament created successfully.");
+          // Optionally reset state here to clear the form
+      } else {
+          // If the response status is not 201, we check for specific error messages
+          Alert.alert("Error", "Failed to create tournament. Please try again.");
+      }
+  } catch (error) {
+      console.error("Error creating tournament:", error);
+      // Here, check the error response for a specific message regarding tournament name uniqueness
+      if (error.response && error.response.status === 400 && error.response.data.message === 'A tournament with this name already exists.') {
+          Alert.alert("Error", "A tournament with this name already exists. Please choose a different name.");
+      } else {
+          Alert.alert("Error", "An error occurred while creating the tournament. Please check your connection and try again.");
+      }
+  }
   };
 
   const groupedTeams = groupTeamsByGroup(currentLeagueTeams);
   
   return (
     <SafeAreaView style={styles.container}>
+
+        {/* Tournament name */}
+        <View style={styles.inputContainer}>
+            <TextInput
+              placeholder="Eşsiz turnuva adınızı girin !"
+              value={tournamentName}
+              onChangeText={setTournamentName}
+              style={styles.tournamentInput}
+            />
+        </View>
+
         {/* Add Player Input */}
         <View style={styles.inputContainer}>
           <TextInput
-            placeholder="Add players"
+            placeholder="Arkadaşlarını ekle !"
             value={playerName}
             onChangeText={setPlayerName}
             style={styles.input}
@@ -151,6 +195,9 @@ const CreateTournamentScreen = () => {
             <Text> Ekle </Text>
           </TouchableOpacity>
         </View>
+
+        {/* Display feedback to the user */}
+        { feedback && <Text style={styles.feedbackText}>{feedback}</Text>}
 
         {/* Player List */}
         <View style={styles.listContainer}>
@@ -206,8 +253,8 @@ const CreateTournamentScreen = () => {
               ))}
             </View>
           ))}
-      </ScrollView>
-        
+        </ScrollView>
+
         
         <View style={styles.switchContainer}>
           <Text>Süpriz Maç</Text>
@@ -219,6 +266,7 @@ const CreateTournamentScreen = () => {
             value={isSurpriseMatchActive}
           />
         </View>
+      
 
       <TouchableOpacity onPress={createTournament} style={styles.createTournamentButton}>
           <Text style={styles.createTournamentButtonText}> Turnuvayı Oluştur</Text>
@@ -241,7 +289,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10,
-    marginTop: 20 ,
+    marginTop: 10 ,
   },
   input: {
     borderWidth: 1,
@@ -260,9 +308,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   listContainer: {
-    width: '90%',
-    marginBottom: 20 ,
-    height: 120 ,
+    width: '70%',
+    marginBottom: 6 ,
+    height: 140 ,
   },
   playersList: {
     marginBottom: 20,
@@ -272,7 +320,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: 'lightgray',
-    padding: 10,
+    padding: 8,
     borderRadius: 5,
     marginBottom: 5,
   },
@@ -292,12 +340,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '90%',
-    marginBottom: 20,
-    marginTop: 40 ,
+    marginBottom: 10,
+    marginTop: 20 ,
   },
   leagueButtonsContainer: {
-    marginTop: 10,
-    marginBottom: 20,
+    marginTop: 5,
+    marginBottom: 10,
     flexDirection: 'row' ,
   },
   leagueButton: {
@@ -313,7 +361,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   teamsContainer: {
-    height: 250 ,
+    height: 230 ,
     width: '90%',
     padding: 1 , 
     marginTop: 0 ,
@@ -323,7 +371,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between', // This spreads out the items to opposite ends
     alignItems: 'center', // This centers the items vertically within the container
     backgroundColor: 'lightgray',
-    padding: 10,
+    padding: 5,
     borderRadius: 5,
     marginBottom: 5,
   },
@@ -366,10 +414,25 @@ const styles = StyleSheet.create({
   groupHeader: {
     fontWeight: 'bold',
     fontSize: 18,
-    marginTop: 20,
+    marginTop: 10,
     marginBottom: 10,
     paddingLeft: 10,
   },
+  tournamentInput: {
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 5,
+    padding: 10,
+    width: '100%', // Ensure it occupies the full width
+    marginBottom: 2, // Space from the next element
+    backgroundColor: 'lightgray',
+  },
+  feedbackText: {
+    color: 'red', // Example color for feedback
+    marginTop: 4,
+    marginBottom: 10 ,
+  },
+
 });
 
 export default CreateTournamentScreen;

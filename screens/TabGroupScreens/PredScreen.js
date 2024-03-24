@@ -3,17 +3,16 @@ import { View, Text, SafeAreaView, ScrollView, TextInput, Image, StyleSheet , To
 import { Ionicons } from '@expo/vector-icons';
 import { gamesData , teamsData } from '../../components/DataComponents/TurkishLeague';
 
-
  const generateGames = () => {
   const games = [...gamesData];
   return games.map((game) => {
-    const homeTeam = teamsData.find((team) => team.id === game.homeTeamId);
-    const awayTeam = teamsData.find((team) => team.id === game.awayTeamId);
+    const homeTeam = teamsData.find((team) => team.t_id === game.homeTeamId);
+    const awayTeam = teamsData.find((team) => team.t_id === game.awayTeamId);
     return { homeTeam, awayTeam, date: game.date, time: game.time };
   });
 }; 
 
-const PredScreen = (  ) => {
+const PredScreen = (  ) => { 
 
   //const [homeScores, setHomeScores] = useState({});
   //const [awayScores, setAwayScores] = useState({});

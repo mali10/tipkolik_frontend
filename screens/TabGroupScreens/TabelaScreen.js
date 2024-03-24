@@ -10,8 +10,8 @@ const TabelaScreen = () => {
     const games = [];
     for (let i = 0; i < gamesData.length; i++) {
       const gameData = gamesData[i];
-      const homeTeam = teams.find(team => team.id === gameData.homeTeamId);
-      const awayTeam = teams.find(team => team.id === gameData.awayTeamId);
+      const homeTeam = teams.find(team => team.t_id === gameData.homeTeamId);
+      const awayTeam = teams.find(team => team.t_id === gameData.awayTeamId);
       games.push({ homeTeam, awayTeam, result: gameData.result });
     }
     return games;
