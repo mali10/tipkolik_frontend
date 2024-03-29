@@ -24,7 +24,8 @@ import { CredentialsContext } from './components/LoginComponents/CredentialsCont
 
 //colors
 import {Colors} from './components/LoginComponents/styles';
-import CreateTournamentScreen from './screens/MainScreens/CreateTournamentScreen';
+import CreateTournamentScreen from './screens/MainScreens/CreateTournament/CreateTournamentScreen';
+
 const { primary , tertiary} = Colors;
 
 //Tab bottom
