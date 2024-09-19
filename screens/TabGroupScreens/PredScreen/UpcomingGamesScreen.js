@@ -153,8 +153,6 @@ const UpcomingGamesScreen = ( {route} ) => {
         }
   };
     
-
-
   if (loading) {
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -183,7 +181,7 @@ const UpcomingGamesScreen = ( {route} ) => {
                             matchDate={game.fixture.date}
                         />
                     ))
-                ) : (
+                    ) : (
                     <Text className="text-center text-sm my-2">No games found for this round.</Text>
                 )}
             </View>
