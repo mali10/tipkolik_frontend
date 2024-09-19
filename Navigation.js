@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { NavigationContainer} from '@react-navigation/native';
 import { createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { createNativeStackNavigator} from '@react-navigation/native-stack';
 
 // icon
@@ -12,9 +13,12 @@ import SignupScreen from './screens/LoginScreens/SignupScreen';
 import WelcomeScreen from './screens/LoginScreens/WelcomeScreen';
 
 import TournamentsScreen from './screens/MainScreens/TournamentsScreen ';
+import CreateTournamentScreen from './screens/MainScreens/CreateTournamentScreen';
 
+import UpcomingGamesScreen from './screens/TabGroupScreens/PredScreen/UpcomingGamesScreen';
+import LiveGamesScreen from './screens/TabGroupScreens/PredScreen/LiveGamesScreen';
+import CompletedGamesScreen from './screens/TabGroupScreens/PredScreen/CompletedGamesScreen';
 
-import PredScreen from './screens/TabGroupScreens/PredScreen';
 import ChatScreen from './screens/TabGroupScreens/ChatScreen';
 import TabelaScreen from './screens/TabGroupScreens/TabelaScreen';
 import SettingsScreen from './screens/TabGroupScreens/SettingsScreen';
@@ -24,17 +28,40 @@ import { CredentialsContext } from './components/LoginComponents/CredentialsCont
 
 //colors
 import {Colors} from './components/LoginComponents/styles';
-import CreateTournamentScreen from './screens/MainScreens/CreateTournament/CreateTournamentScreen';
+
 
 const { primary , tertiary} = Colors;
+
+
+//Tab on top
+const TopTab = createMaterialTopTabNavigator();
+function PredTabGroup() {
+
+    return (
+        <TopTab.Navigator
+          initialRouteName="Upcoming"
+
+          screenOptions={{
+            lazy: true,
+            tabBarLabelStyle: { fontSize: 12 },
+            tabBarStyle: { backgroundColor: 'white' },
+            tabBarIndicatorStyle: { backgroundColor: 'green' },
+          }}
+        >
+          <Tab.Screen name="Upcoming" component={UpcomingGamesScreen} />
+          <Tab.Screen name="Live" component={LiveGamesScreen} />
+          <Tab.Screen name="Completed" component={CompletedGamesScreen} />
+        </TopTab.Navigator>
+      );
+
+}
 
 //Tab bottom
 const Tab = createBottomTabNavigator();
 function TabGroup() {
     return(
-            <Tab.Navigator
-            //headerShown: false, inside the options
-            screenOptions={ ({route , navigation}) => 
+        <Tab.Navigator
+            screenOptions={ ({route}) => 
                 ({
                     tabBarIcon: ({color , focused , size}) => {
                         let iconName;
@@ -57,15 +84,18 @@ function TabGroup() {
                     } ,
                     tabBarActiveTintColor: "black",
                     tabBarInactiveTintColor: "black" , 
+                    headerShown: false,
                 })
             }>
-                <Tab.Screen name="Tahminler" component={PredScreen}/>
+                <Tab.Screen name="Tahminler" component={PredTabGroup}/>
                 <Tab.Screen name="Puan Durumu" component={TabelaScreen} options={{headerShown: false , tabBarLabel: "@Puan_Durumu"}} />  
                 <Tab.Screen name="Chat" component={ChatScreen}/>
                 <Tab.Screen name="Ayarlar" component={SettingsScreen}/>
-            </Tab.Navigator>
+        </Tab.Navigator>
     )
 } 
+
+
 
 const bigStack = createNativeStackNavigator(); // big App stack
 export default function Navigation() {
@@ -101,6 +131,7 @@ export default function Navigation() {
                         <bigStack.Screen name='Turnuvalar' component={TournamentsScreen} />
                         <bigStack.Screen name='TurnuvaCreating' component={CreateTournamentScreen} />
                         <bigStack.Screen name='TurnuvaTabGroup' component={TabGroup}  />
+                        <bigStack.Screen name='PredTabGroup' component={PredTabGroup}  />
                         
                     </bigStack.Navigator>
             </NavigationContainer>

@@ -41,6 +41,7 @@ import KeyboardAvoidingWrapper from '../../components/LoginComponents/KeyboardAv
 
 // api client
 import axios from 'axios';
+import { CURRENT_IP_R } from '@env';
 
 // credentials context
 import { CredentialsContext } from '../../components/LoginComponents/CredentialsContext';
@@ -79,8 +80,8 @@ const SignupScreen = ({ navigation }) => {
     // to clear previous messages
     handleMessage(null);
  
-    const url = "http://10.0.2.2:3000/user/signup";
-
+    const url = `http://${CURRENT_IP_R}:3000/user/signup`;
+  
     axios.post(url , credentials).
      then(( response ) => {
       const result = response.data;

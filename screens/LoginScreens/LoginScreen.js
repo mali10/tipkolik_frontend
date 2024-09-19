@@ -38,6 +38,8 @@ import KeyboardAvoidingWrapper from '../../components/LoginComponents/KeyboardAv
 
 //API Client
 import axios from 'axios';
+import { CURRENT_IP_R } from '@env';
+
 
 // credentials context
 import { CredentialsContext } from '../../components/LoginComponents/CredentialsContext';
@@ -58,7 +60,7 @@ const LoginScreen = ({ navigation }) => {
     handleMessage(null);
     
     //should be updated according to the device and IP
-    const url = "http://192.168.1.39:3000/user/signin"; 
+    const url = `http://${CURRENT_IP_R}:3000/user/signin`;
 
     axios.post(url , credentials).
      then(( response ) => {
@@ -68,9 +70,10 @@ const LoginScreen = ({ navigation }) => {
       if ( status !== 'SUCCESS') {
         handleMessage(message , status)
       } else {
+      
         const userData = data[0] ? data[0] : data; // Adjust based on your API response structure
         setStoredCredentials(userData); // Optionally set context if needed elsewhere
-        navigation.navigate('Welcome' , userData)   
+        navigation.navigate('Welcome' , userData)
       }
       setSubmitting(false);
 
@@ -112,6 +115,8 @@ const LoginScreen = ({ navigation }) => {
   }
 
     
+  console.log(CURRENT_IP_R);
+
   // values in onSubmit: Inputs for Email and Password
   return (
     <KeyboardAvoidingWrapper>

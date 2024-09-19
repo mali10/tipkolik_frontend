@@ -1,4 +1,4 @@
-import React , {useContext} from 'react';
+import React , { useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 
 import {
@@ -11,6 +11,8 @@ import {
   Line,
   WelcomeContainer,
   Avatar,
+  View,
+  Text,
 } from '../../components/LoginComponents/styles';
 
 
@@ -19,6 +21,7 @@ import { CredentialsContext } from '../../components/LoginComponents/Credentials
 
 
 const WelcomeScreen = ( {navigation} ) => {
+
 
   // credentials context
   const { storedCredentials, setStoredCredentials } = useContext(CredentialsContext);

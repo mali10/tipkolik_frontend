@@ -1,133 +1,148 @@
-import React, { useState } from 'react';
-import { SafeAreaView, Text, TouchableOpacity, TextInput, View, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import React, { useState , useEffect, useContext} from 'react';
+import {
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  View,
+  FlatList,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Alert
+} from 'react-native';
 
+import axios from 'axios';
+import { CURRENT_IP_R } from '@env';
+import { CredentialsContext } from '../../components/LoginComponents/CredentialsContext';
 
 const TournamentsScreen = ({navigation}) => {
+
+  const [tournamentNames, setTournamentNames] = useState([]);
+  const { storedCredentials } = useContext(CredentialsContext);
+  const defaultCredentials = { name: 'Creator', email: 'creator@example.com' };
+  // Admin
+  const { name: creatorName } = storedCredentials || defaultCredentials;
+  const [loading, setLoading] = useState(false);
   
-  const handleTurnuvaClick = (turnuvaName) => {
-    // Navigate to 'Turnuva' with the selected turnuvaName
-    navigation.navigate('TurnuvaTabGroup');
+  useEffect(() => {
+    if (creatorName) {
+      fetchUserTournaments(creatorName);
+    }
+  }, [creatorName]);
+
+  const fetchUserTournaments = async () => {
+
+    if (!creatorName) {
+      Alert.alert("Error", "No user is signed in the app.");
+      return;
+    }
+
+    setLoading(true);
+    const apiUrl = `http://${CURRENT_IP_R}:3000/tournament/tournaments-list?name=${encodeURIComponent(creatorName.toLowerCase())}`;
+    
+    try {
+      const response = await axios.get(apiUrl);
+      setLoading(false);
+
+      if (response.status === 200 && response.data.length > 0) {
+        setTournamentNames(response.data);
+      } else if (response.status === 200 && response.data.length === 0) {
+        Alert.alert("No Tournaments", "No tournaments found for this user.");
+      }
+    } catch (error) {
+      setLoading(false);
+      if (error.response) {
+        // Server responded with a status outside the 2xx range
+        if (error.response.status === 404) {
+          Alert.alert("User Not Found", error.response.data.message);
+        } else if (error.response.status === 400) {
+          Alert.alert("Error", "User name is required.");
+        } else if (error.response.status === 204) {
+          Alert.alert("No Tournaments", "No tournaments found for this user.");
+        } else {
+          Alert.alert("Error", error.response.data.message);
+        }
+      } else if (error.request) {
+        // The request was made but no response was received
+        Alert.alert("Network Error", "Could not receive a response from the server. Please check your network connection.");
+      } else {
+        // Something else happened in making the request that triggered an error
+        Alert.alert("Error", "An error occurred. Please try again later.");
+      }
+    } 
+};
+
+  const handleSelectTournament = (selectedTournament) => {
+    navigation.navigate('TurnuvaTabGroup', {
+      screen: 'Tahminler',
+      params: {
+          screen: 'Upcoming',
+          params: {
+              tournamentName: selectedTournament,
+          },
+      },
+  });
   };
 
-  const handleJoinTurnuva = () => {
-    // Handle joining a turnuva with the provided code
-    // Implement your logic here
-    //console.log(`Joining Turnuva with code: ${turnuvaCode}`);
-  };
 
-  const handleCreateTurnuva = () => {
-    // Navigate to the screen for creating a new turnuva
-    navigation.navigate('TurnuvaCreating');
-
-  };
-
-  const handleGeneralTurnuva = () => {
-    // Navigate to the general turnuva screen
-    //navigation.navigate('GeneralTurnuva');
-  };
+  console.log(CURRENT_IP_R)
+  console.log(creatorName)
+  console.log("On Tournament Screen available")
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <SafeAreaView style={styles.container}>
-        <View style={styles.turnuvaList}>
-          {/* Removed username part as per requirement */}
-          <TouchableOpacity onPress={handleTurnuvaClick} style={styles.turnuvaButton}>
-            <Text style={styles.buttonText}>Süper Lig</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleTurnuvaClick} style={styles.turnuvaButton}>
-            <Text style={styles.buttonText}>Premier Lig</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleTurnuvaClick} style={styles.turnuvaButton}>
-            <Text style={styles.buttonText}>Serie B</Text>
-          </TouchableOpacity>
-          {/* You can add more tournaments as needed */}
+      <SafeAreaView className="flex-1 justify-around p-5">
+      
+       <Text className="text-center text-lg font-bold text-gray-800 mb-2.5">{creatorName}'ın Turnuvaları</Text>
+
+        {/* First Area - Active Tournaments */}
+        <View className="w-full mb-5">
+            <Text className="text-center text-2xl font-bold text-gray-800 mb-2.5">Turnuvaların</Text>
+              <FlatList
+                data={tournamentNames}
+                keyExtractor={(item) => item}
+                renderItem={({ item }) => (
+                <TouchableOpacity
+                    className="items-center bg-green-900 rounded-lg px-5 py-3.5 my-1.5 mx-auto w-4/5"
+                    onPress={() => handleSelectTournament(item)}
+                >
+                    <Text className="text-white font-bold">{item}</Text>
+                </TouchableOpacity>
+                )}
+              />
         </View>
 
-        <View style={styles.bottomOptions}>
-          <View style={styles.optionContainer}>
-            <TouchableOpacity onPress={handleJoinTurnuva} style={styles.bottomButton}>
-              <Text style={styles.buttonText}>Turnuvaya gir</Text>
-            </TouchableOpacity>
-            <TextInput
-              style={styles.codeInput}
-              placeholder="Code"
-            />
-          </View>
+        {/* Separator */}
+        <View className="border-b-2 border-gray-300 my-5 self-center w-11/12" />
 
-          <View style={styles.optionContainer}>
-            <TouchableOpacity onPress={handleCreateTurnuva} style={styles.bottomButton}>
-              <Text style={styles.buttonText}>Yeni turnuva oluştur</Text>
-            </TouchableOpacity>
-          </View>
+        {/* Second Area - General Tournaments */}
+        <View className="w-full mb-5">
+          <Text className="text-center text-2xl font-bold text-gray-800 mb-2.5">Tıkla & Tahmine Başla</Text>
+        
+        </View>
 
-          <View style={styles.optionContainer}>
-            <TouchableOpacity onPress={handleGeneralTurnuva} style={styles.bottomButton}>
-              <Text style={styles.buttonText}>Genel Turnuvalar</Text>
-            </TouchableOpacity>
-          </View>
+        {/* Separator */}
+        <View className="border-b-2 border-gray-300 my-5 self-center w-11/12" />
+
+        {/* Third Area - Join/Create Tournaments */}
+        <View className="w-full mb-5">
+          {/* Join Tournament Button */}
+          <TouchableOpacity onPress={() => navigation.navigate('TurnuvaTabGroup')} className="items-center bg-green-900 rounded-lg px-5 py-3.5 my-1.5 mx-auto w-4/5">
+            <Text className="text-white font-bold">Turnuvaya gir</Text>
+          </TouchableOpacity>
+          <TextInput
+            className="border border-gray-800 bg-white rounded-lg p-2.5 my-1.5 mx-auto w-4/5"
+            placeholder="Code"
+          />
+
+          {/* Create Tournament Button */}
+          <TouchableOpacity onPress={() => navigation.navigate('TurnuvaCreating')} className="items-center bg-green-900 rounded-lg px-5 py-3.5 my-1.5 mx-auto w-4/5">
+            <Text className="text-white font-bold">Yeni turnuva oluştur</Text>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );
-}
-
-// Styles remain unchanged
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  turnuvaTitlesList: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  turnuvaList: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    marginBottom: 20,
-    flex: 1,
-    width: '90%',
-    alignItems: 'center',
-  },
-  turnuvaButton: {
-    marginVertical: 5,
-    paddingVertical: 15,
-    backgroundColor: 'gray',
-    borderRadius: 8,
-    width: '100%',
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  bottomOptions: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '80%',
-    flex: 1,
-  },
-  optionContainer: {
-    alignItems: 'center',
-    marginBottom: 20,
-    width: '100%',
-  },
-  codeInput: {
-    borderWidth: 1,
-    padding: 15,
-    borderRadius: 8,
-    marginTop: 10,
-    width: '100%',
-  },
-  bottomButton: {
-    padding: 10,
-    backgroundColor: 'green',
-    borderRadius: 8,
-    width: '100%',
-    alignItems: 'center'
-  },
-});
+};
 
 export default TournamentsScreen;
