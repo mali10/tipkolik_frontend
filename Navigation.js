@@ -7,7 +7,6 @@ import { createNativeStackNavigator} from '@react-navigation/native-stack';
 // icon
 import { Octicons, Fontisto, Ionicons } from '@expo/vector-icons';
 
-// Screen imports
 import LoginScreen from './screens/LoginScreens/LoginScreen';
 import SignupScreen from './screens/LoginScreens/SignupScreen';
 import WelcomeScreen from './screens/LoginScreens/WelcomeScreen';
@@ -23,18 +22,15 @@ import ChatScreen from './screens/TabGroupScreens/ChatScreen';
 import TabelaScreen from './screens/TabGroupScreens/TabelaScreen';
 import SettingsScreen from './screens/TabGroupScreens/SettingsScreen';
 
-// credentials context
 import { CredentialsContext } from './components/LoginComponents/CredentialsContext';
 
-//colors
 import {Colors} from './components/LoginComponents/styles';
-
 
 const { primary , tertiary} = Colors;
 
-
-//Tab on top
 const TopTab = createMaterialTopTabNavigator();
+
+// top Tab
 function PredTabGroup() {
 
     return (
@@ -56,7 +52,7 @@ function PredTabGroup() {
 
 }
 
-//Tab bottom
+//bottom Tab
 const Tab = createBottomTabNavigator();
 function TabGroup() {
     return(
@@ -97,11 +93,9 @@ function TabGroup() {
 
 
 
-const bigStack = createNativeStackNavigator(); // big App stack
+const bigStack = createNativeStackNavigator(); 
 export default function Navigation() {
 
-  // Here, you could use useContext if you need to access credentials context
-  // For this example, it's not directly used but you can include logic based on context here
   const { storedCredentials } = useContext(CredentialsContext);
 
     return (

@@ -13,17 +13,11 @@ const CompletedGamesScreen = () => {
 
   const { tournamentInfos } = useContext(TournamentContext);
   const { tournamentName, teams, leagues , rounds} = tournamentInfos || { tournamentName: 't_name', teams: [0] };
-  // console.log("Teams:", teams);
-  // console.log("Leagues:", leagues);
-  // console.log("Rounds:", rounds);
   const [leagueGames, setLeagueGames] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // console.log("Teams:", teams);
-    // console.log("Leagues:", leagues);
-    // console.log("Rounds:", rounds);
-
+    
     const fetchGames = async () => {
     
       const requests = teams.flatMap(team =>
@@ -35,9 +29,9 @@ const CompletedGamesScreen = () => {
                       season: '2024',
                       team: team.teamId,
                       league: leagueId,
-                      //round: rounds[leagueId],
+                      round: rounds[leagueId],
+                      last: 1 ,
                       //status: "FT",
-                      last: 1 , // fix this.
                   },
                   headers: {
                       'x-rapidapi-key': RAPID_API_KEY,
@@ -58,11 +52,10 @@ const CompletedGamesScreen = () => {
               acc[leagueId].push(game);
               return acc;
             }, {});
-      
-            // Sort leagues by the number of games
+    
             const sortedLeagues = Object.entries(leagueGameMap).sort((a, b) => b[1].length - a[1].length);
-            // Convert array back to object
-            setLeagueGames(Object.fromEntries(sortedLeagues));
+            setLeagueGames(Object.fromEntries(sortedLeagues)); //converting array back to object
+            console.log(leagueGames)
       
           } catch (error) {
             console.error('Failed to fetch games:', error);
@@ -71,10 +64,6 @@ const CompletedGamesScreen = () => {
             setLoading(false); 
           }
     };
-
-    // console.log("Teams:", teams);
-    // console.log("Leagues:", leagues);
-    // console.log("Rounds:", rounds);
 
     if (teams && teams.length > 0 && leagues.length > 0) {
       fetchGames();
@@ -96,9 +85,8 @@ const CompletedGamesScreen = () => {
   return (
     <ScrollView className="bg-white">
       {leagues.map(league => {
-        const games = leagueGames[league.leagueId] || []; // Access games or use an empty array if none exist
-        const roundNumber = rounds[league.leagueId] ? rounds[league.leagueId].match(/\d+/)[0] : 'Unknown'; // Extracts the round number
-
+        const games = leagueGames[league.leagueId] || []; 
+        const roundNumber = rounds[league.leagueId] ? rounds[league.leagueId].match(/\d+/)[0] : 'Unknown'; // Extracting round number
         return (
             <View key={league.leagueId} className="p-3">
                 <Text className="text-center font-bold text-xl mb-1">

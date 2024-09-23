@@ -17,7 +17,7 @@ const UpcomingGamesScreen = ( {route} ) => {
   const [leagues, setLeagues] = useState([]);
   const [leagueRounds, setLeagueRounds] = useState({});
   const [leagueGames, setLeagueGames] = useState({}); 
-  // fetch also game ids and save the predictions with game ids.
+  
   const [predictions, setPredictions] = useState({});
 
   const [loading, setLoading] = useState(true); 
@@ -72,7 +72,7 @@ const UpcomingGamesScreen = ( {route} ) => {
         url: `${RAPID_API_URL}fixtures/rounds`,
         params: {
           season: '2024',
-          league: league.leagueId, // Use leagueId from the league object
+          league: league.leagueId, 
           current: 'true'
         },
         headers: {
@@ -118,7 +118,8 @@ const UpcomingGamesScreen = ( {route} ) => {
                     team: team.teamId,
                     league: leagueId,
                     round: rounds[leagueId],
-                    // next: 1, // Uncomment if you are fetching the next game of the team
+                    status: "NS"
+                    // next: 1, 
                 },
                 headers: {
                     'x-rapidapi-key': RAPID_API_KEY,
@@ -140,10 +141,9 @@ const UpcomingGamesScreen = ( {route} ) => {
             return acc;
           }, {});
     
-          // Sort leagues by the number of games
           const sortedLeagues = Object.entries(leagueGameMap).sort((a, b) => b[1].length - a[1].length);
-          // Convert array back to object
           setLeagueGames(Object.fromEntries(sortedLeagues));
+          console.log(leagueGames);
     
         } catch (error) {
           console.error('Failed to fetch games:', error);
@@ -164,8 +164,8 @@ const UpcomingGamesScreen = ( {route} ) => {
   return (
     <ScrollView className="bg-white">
       {leagues.map(league => {
-        const games = leagueGames[league.leagueId] || []; // Access games or use an empty array if none exist
-        const roundNumber = leagueRounds[league.leagueId] ? leagueRounds[league.leagueId].match(/\d+/)[0] : 'Unknown'; // Extracts the round number
+        const games = leagueGames[league.leagueId] || []; 
+        const roundNumber = leagueRounds[league.leagueId] ? leagueRounds[league.leagueId].match(/\d+/)[0] : 'Unknown'; 
 
         return (
             <View key={league.leagueId} className="p-3">

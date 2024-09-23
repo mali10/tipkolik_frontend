@@ -10,6 +10,8 @@ import { TournamentContext } from '../../../components/PredComponents/Tournament
 
 const LiveGamesScreen = () => {
   
+  // SHOULD BE UPDATED
+  
   const { tournamentInfos } = useContext(TournamentContext);
   const { tournamentName, teamIds} = tournamentInfos || { tournamentName: 't_name', teamIds: [0]};
   

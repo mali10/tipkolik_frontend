@@ -12,13 +12,12 @@ import {
 } from 'react-native';
 
 import { RAPID_API_URL , RAPID_API_KEY, RAPID_API_HOST , CURRENT_IP_R } from '@env';
-//API Client
+
 import axios from 'axios';
 import { CredentialsContext } from '../../components/LoginComponents/CredentialsContext';
 
 const CreateTournamentScreen = () => {
 
-  // Feedback message
   const [feedback, setFeedback] = useState('');
   
   const { storedCredentials } = useContext(CredentialsContext);
@@ -57,7 +56,6 @@ const CreateTournamentScreen = () => {
     fetchTeams(firstLeagueConfig.leagueId, firstLeagueConfig.season);
   }, []);
 
-  // Teams-fetching function
   const fetchTeams = useCallback(async (leagueId, season) => {
     const url = `${RAPID_API_URL}teams?league=${leagueId}&season=${season}`;
     console.log("Teams Fetched")
@@ -84,7 +82,6 @@ const CreateTournamentScreen = () => {
         const existingTeamIndex = prevSelectedTeams.findIndex(t => t.teamId === teamId);
         if (existingTeamIndex > -1) {
             const existingTeam = prevSelectedTeams[existingTeamIndex];
-            // Ensure leagueId is valid and not already included
             if (leagueId && !existingTeam.leagueIds.includes(leagueId) && leagueId.trim() !== "") {
                 const updatedTeam = {
                     ...existingTeam,
@@ -98,7 +95,6 @@ const CreateTournamentScreen = () => {
             }
             return prevSelectedTeams;
         } else {
-            // Add new team if it wasn't selected before with the new valid leagueId
             if (leagueId && leagueId.trim() !== "") {
                 return [...prevSelectedTeams, { teamId, leagueIds: [leagueId] }];
             }
@@ -107,8 +103,6 @@ const CreateTournamentScreen = () => {
     });
 };
 
-
-  // Check if the team is selected
   const isTeamSelected = (teamId, leagueId) => {
     const team = selectedTeams.find(t => t.teamId === teamId);
     return team ? team.leagueIds.includes(leagueId) : false;
@@ -120,7 +114,6 @@ const CreateTournamentScreen = () => {
     fetchTeams(leagueId, season);
   };
 
-  
   // To check tournament name uniqueness
   const checkTournamentName = async () => {
     try { 
@@ -145,7 +138,6 @@ const CreateTournamentScreen = () => {
     }
   };
 
-  // When adding players, check 
   const handleCheckPlayerExists = async (playerName) => {
     try {
       const response = await axios.post(`http://${CURRENT_IP_R}:3000/user/check-player`, { playerName });
@@ -155,24 +147,21 @@ const CreateTournamentScreen = () => {
       throw error; // Rethrow the error to handle it in the calling function
     }
   };
-  
-  // addPlayer function
+ 
   const addPlayer = async () => {
-    setFeedback(''); // Clear previous feedback
+    setFeedback(''); 
     if (!playerName.trim()) {
-      // Provide feedback if the player name input field is empty
       setFeedback(' Oyuncu ismi girin !');
-      return; // Exit the function early
+      return; 
     }
 
     try {
-      // or handle with Alert
       const exists = await handleCheckPlayerExists(playerName.trim());
       if (exists) {
         if (!players.includes(playerName.trim())) {
           setPlayers(currentPlayers => [...currentPlayers, playerName.trim()]);
-          setPlayerName(''); // Clear the input field after adding
-          setFeedback(''); // Clear feedback if successful
+          setPlayerName(''); 
+          setFeedback(''); 
         } else {
           setFeedback("Player is already added.");
         }
@@ -188,25 +177,15 @@ const CreateTournamentScreen = () => {
     setPlayers(currentPlayers => currentPlayers.filter((_, index) => index !== indexToRemove));
   };
 
-  // const extractLeagueIds = (teams) => {
-  //   const leagueSet = new Set();
-  //   teams.forEach(team => {
-  //       team.leagueIds.forEach(leagueId => {
-  //           leagueSet.add(leagueId);
-  //       });
-  //   });
-  //   return Array.from(leagueSet);
-  // };
-
+ 
   const extractLeagueDetails = (teams) => {
-    const uniqueLeagueIds = new Set(); // To track unique league IDs
-    const leagueDetails = []; // Array to store league details
+    const uniqueLeagueIds = new Set(); 
+    const leagueDetails = []; 
 
     teams.forEach(team => {
       team.leagueIds.forEach(leagueId => {
-        // Check if leagueId has already been processed
         if (!uniqueLeagueIds.has(leagueId)) {
-          uniqueLeagueIds.add(leagueId); // Mark this leagueId as processed
+          uniqueLeagueIds.add(leagueId); 
           const leagueName = Object.entries(leagueConfigs).find(([key, value]) => value.leagueId === leagueId)?.[0];
           if (leagueName) {
             leagueDetails.push({ leagueId: leagueId, leagueName: leagueName });
@@ -224,17 +203,17 @@ const CreateTournamentScreen = () => {
 
     if (!tournamentName.trim()) {
       Alert.alert("Error", "Tournament name can not be empty.");
-      return; // Exit the function early if no tournament name is provided
+      return; 
     }
   
     if (selectedTeams.length === 0) {
       Alert.alert("Error", "You have to at least select 1 team.");
-      return; // Exit the function early
+      return; 
     }
   
     if (players.length === 0) {
       Alert.alert("Error", "No players added.");
-      return; // Exit the function early
+      return; 
     }
 
     const leagueDetails = extractLeagueDetails(selectedTeams);
@@ -270,16 +249,14 @@ const CreateTournamentScreen = () => {
           setSelectedTeams([]);
           setIsSurpriseMatchActive(false);
 
-          //Add this later
-          //navigation.navigate('PredTabGroup');
+          // Add this later after finishing the logic
+          // navigation.navigate('PredTabGroup');
 
       } else {
-          // If the response status is not 201, we check for specific error messages
           Alert.alert("Error", "Failed to create tournament. Please try again.");
       }
     } catch (error) {
         console.error("Error creating tournament:", error);
-        // Here, check the error response for a specific message regarding tournament name uniqueness
         if (error.response && error.response.status === 400 && error.response.data.message === 'A tournament with this name already exists.') {
             Alert.alert("Error", "A tournament with this name already exists. Please choose a different name.");
         } else {
@@ -325,7 +302,6 @@ const CreateTournamentScreen = () => {
         { feedback && <Text className="text-red-500 mt-1 mb-2">{feedback}</Text>}
 
         {/* Player List */}
-        
         <ScrollView className="w-3/4 mb-10 min-h-500" >
             {players.map((player, index) => (
               <View key={index.toString()} className="flex-row justify-between items-center bg-gray-300 p-2 rounded mb-1">
