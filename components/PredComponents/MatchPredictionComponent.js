@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Image } from 'react-native';
 
-const MatchPrediction = ({ team1, team2, matchDate }) => {
+const MatchPrediction = ({ team1, team2, matchDate, onPredictionChange, gameId }) => {
     const [scoreTeam1, setScoreTeam1] = useState('');
     const [scoreTeam2, setScoreTeam2] = useState('');
 
-    
+    useEffect(() => { // Add this to prediction screen 
+        onPredictionChange(gameId, scoreTeam1, scoreTeam2);
+    }, [scoreTeam1, scoreTeam2]);
+
+
     return (
         <View className="flex-1 items-center justify-center m-2">
             <View className="w-10/11 p-4 border border-gray-400 rounded-lg bg-gray-100 flex-column items-center">
